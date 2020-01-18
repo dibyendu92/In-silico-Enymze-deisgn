@@ -1,0 +1,10 @@
+mapping_type EVB
+map_pf 21 1 2
+fileroot ./kemp_evb_run/map_evb.gap 18
+gas_dg 1 57.0
+gas_dg 2 0.0
+stepsize 0.001
+Hr 1 2 11 16 OD2 125.0 0.1
+points_throw 10
+temperature 300.0
+end

@@ -1,0 +1,131 @@
+# . Molaris script
+./mutated_fast_evb.pdb
+
+analyze
+    addbond 1 3846 3933 
+#    addbond 1 53 55  
+#    addbond 1 72 74 
+    makepdb
+        residue all
+        file_nm initial_coord.pdb
+    end
+end
+
+
+enzymix
+   pre_enz
+        ionres     22
+        ionres     25
+        ionres     45
+#        ionres     49
+        ionres     51
+        ionres    123
+        ionres    130
+        ionres    139
+        ionres    160
+        ionres    163
+        ionres    167
+        ionres    172
+        ionres    176
+        ionres    182
+        ionres    201
+        ionres    231
+        ionres    238
+        ionres    275
+   end
+   evb
+        read_evb ./evb.dat
+        evb_state   2   1.00   0.00
+        map_pf      21      1       2
+        # . ASP125
+#    evb_atm    CG    0.98    C+          0.70    C+    #    0.45    C3    CG    D
+#    evb_atm    OD1     -0.99    O-         -0.57    O-    #   -0.23    O1   OD1    D
+#    evb_atm    OD2     -0.99    O-         -0.65    O0    #   -0.23    O1   OD2    D   !! Changing type
+
+#    evb_bnd   0  CG   OD1    #   CG  OD1
+#    evb_bnd   0  CG   OD2    #   CG  OD2
+# . NT6301 (Sequence of atoms in the PDB file is different!)
+#    evb_atm     8     -0.13    O0         -0.59    O-    #   -0.13    O2    O1    A   !! Changing type
+#    evb_atm    12     -0.60    NR         -0.32    NT    #   -0.60    N2    N2    A (N+ neg?)
+#    evb_atm    11      0.49    C+         -0.37    CT    #    0.49    C3    C3    A   !! Changing type
+#    evb_atm     9     -0.13    C+          0.19    C+    #   -0.13    C3   C3A    A
+#   evb_atm    10     -0.39    C+         -0.43    C+    #   -0.39    C3    C4    A
+#   evb_atm     4      0.06    C+         -0.22    C+    #    0.06    C3    C5    A
+#   evb_atm     5     -0.03    C+         -0.03    C+    #   -0.03    C3    C6    A
+#   evb_atm     6     -0.48    C+         -0.78    C+    #   -0.48    C3    C7    A
+#   evb_atm     7      0.49    C+          0.97    C+    #    0.49    C3   C7A    A
+#   evb_atm     2      0.71    N+          0.99    N+    #    0.71    N2    N8    A
+#   evb_atm     3     -0.49    O-         -0.58    O-    #   -0.49    O1    O9    A
+#   evb_atm     1     -0.48    O-         -0.59    O-    #   -0.48    O1   O10    A
+#   evb_atm    13      0.18    H0          0.20    H0    #    0.18    H2   H11    A
+#   evb_atm    14      0.42    H0          0.30    H0    #    0.42    H2   H12    A
+#   evb_atm    15      0.23    H0          0.29    H0    #    0.23    H2   H13    A
+#   evb_atm    16      0.15    H0          0.49    H0    #    0.15    H2   H14    A
+
+#   evb_bnd   0   1   2    #  O10   N8
+#   evb_bnd   0   2   3    #   N8   O9
+#   evb_bnd   0   2   4    #   N8   C5
+#   evb_bnd   0   4   5    #   C5   C6
+#   evb_bnd   0   4  10    #   C5   C4
+#   evb_bnd   0   5   6    #   C6   C7
+#   evb_bnd   0   5  13    #   C6  H11
+#   evb_bnd   0   6   7    #   C7  C7A
+#   evb_bnd   0   6  15    #   C7  H13
+#  evb_bnd   0   7   8    #  C7A   O1
+#  evb_bnd   0   7   9    #  C7A  C3A
+#  evb_bnd   1   8  12    #   O1   N2
+#  evb_bnd   0   9  10    #  C3A   C4
+#  evb_bnd   0   9  11    #  C3A   C3
+#  evb_bnd   0  10  14    #   C4  H12
+#  evb_bnd   0  11  12    #   C3   N2
+#  evb_bnd   1  11  16    #   C3  H14    !! Changing bond
+#  evb_bnd   2  16  OD2  #  OD2  H14    !! Changing bond
+# EVB atoms: 19, EVB bonds: 19
+
+        Hr 1 2 11 16 OD2 0.0 0.0
+        gas_dg 1 0.0
+        gas_dg 2 0.0
+        evb_parm
+            iflag_r4 0
+        end
+
+        # C3--H14...OD2
+        evb_a_con  11 16 OD2  180.0  10.0  0
+
+        #     H14...C3 (use PDB distance)
+         evb_d_con 11 16  2.50  10.0  2
+    
+         evb_d_con 11 OD2 3.40 10.0 0
+
+
+#        rest_in     ./output/kemp_44N_300/kemp_44N_300.res
+#        rest_in     ../output/kemp_conf1_con03/kemp_conf1_con03.res
+        rest_out    kemp_evb.res
+        md_parm
+
+
+            temperature     300
+            ss                0.001
+            nsteps          20000
+            log_write_fq     10000
+#            movie_co        all wat
+#            movie_fq         500
+            region2a_r       18
+            water_r          18
+            langevin_r       20
+            induce 2
+            indforce 1
+            constraint_1 0.3
+            constraint_2 0.03
+        end
+    end
+end
+
+analyze
+    allres
+    makepdb
+        residue all+w
+        file_nm slow_from_fast_evb.pdb
+    end
+end
+end
