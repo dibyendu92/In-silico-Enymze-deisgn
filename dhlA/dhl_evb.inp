@@ -1,0 +1,94 @@
+2dhc.pdb
+enzymix
+#pre_enz  # no ionization 
+#ionres 261 
+#ionres 230
+#ionres 177
+#ionres 179
+#ionres 294
+#ionres 267
+#ionres 222
+#ionres 225
+#ionres 262
+
+#end
+   evb
+      read_evb ./evb_gar2.dat
+      evb_state 2 1.0 0.0
+       evb_a_con 6 2 1985 90 20 1
+       evb_d_con 1985 2 2.6 15 1
+       evb_d_con 1 2 3.5 10 2
+       evb_t_con 1984 1983 1985 2 0.0 10 0
+       evb_t_con 4 3 2 1985 240 10 0
+       evb_t_con 1983 1985 2 3 180 10 0
+       evb_t_con 1978 1980 1983 1984 270 10 0
+
+      gas_dg 1   0.0
+      gas_dg 2   0.0
+evb_parm
+         iflag_r4 0
+end
+      
+rest_out relax.res
+        md_parm
+         temperature 300.0
+         ss 0.001
+         nsteps 50000
+         region2a_r 18
+         water_r 18
+         langevin_r 20
+         log_write_fq 5000
+         constraint_1 0.3
+         constraint_2 0.03
+
+
+      end
+   end
+
+   evb
+      read_evb ./evb_gar2.dat
+      evb_state 2 1.0 0.0
+      map_pf 31 1 2
+       evb_a_con 6 2 1985 90 20 1
+       evb_d_con 1985 2 2.6 15 1
+       evb_d_con 1 2 3.5 10 2
+       evb_t_con 1984 1983 1985 2 0.0 10 0
+       evb_t_con 4 3 2 1985 240 10 0
+       evb_t_con 1983 1985 2 3 180 10 0
+       evb_t_con 1978 1980 1983 1984 270 10 0
+
+      gas_dg 1   0.0
+      gas_dg 2   0.0
+evb_parm
+         iflag_r4 0
+end
+rest_in $OUT_DIR/relax.res
+rest_out relax_1.res
+
+        md_parm
+         temperature 300.0
+         ss 0.001
+         nsteps 20000
+         region2a_r 18
+         water_r 18
+         langevin_r 20
+         log_write_fq 1000
+         movie_co all
+         movie_co wat
+         movie_fq 500
+         constraint_1 0.3
+         constraint_2 0.03
+      end
+   end
+
+end
+
+analyze
+   makepdb     #creating a .pdb file with relaxed structure
+      residue all
+    file_nm evb_new.pdb
+   end
+   end
+end
+end
+
